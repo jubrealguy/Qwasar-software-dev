@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moving box</title>
+</head>
+<body>
+    <div id="my_box_realtime" style= "background-color: red; position: absolute; right: 70px; bottom: 70px; min-width: 100px; min-height: 100px"></div>
+    <script>
+        box = document.getElementById('my_box_realtime');
+        box.style.right = '70px';
+        box.style.bottom = '70px';
+       
+        setInterval(move, 50)
+          
+
+        var pos_x = 69;
+        var pos_y = 69;
+
+        function move() {
+                box.style.right = pos_x + 'px';
+                box.style.bottom = pos_y + 'px';
+                
+                if (pos_x >= 0 && pos_y >= 0) {
+                    pos_x--;
+                    pos_y--;
+                }
+                else {
+                    pos_x = 70
+                    pos_y = 70;
+                }
+            }
+
+    </script>
+</body>
+</html>
