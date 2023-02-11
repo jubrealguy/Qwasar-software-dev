@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" style='background-color: black'>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>OGTL Practice</title>
+    </head>
+    <body>
+        <div id="my_bouncing_box" style= "background-color: red; border-radius: 3px; position: absolute; top: 0px; left: 0px; min-width: 100px; min-height: 100px; text-align: center; font-weight: bold; color: #999;" >whizkidjubrealguy@gmail.com</div>
+
+        <script type="text/javascript">
+            var box = document.getElementById("my_bouncing_box");
+            setInterval(move, 1);
+
+            // Default position of the box
+            var x = 0;
+            var y = 0;
+
+            // variables for iteration of box position
+            var move_x = 0;
+            var move_y = 0;
+            
+
+            //position of the walls - innerwidth minus the size of box
+            var max_width = window.innerWidth - 100;
+            var max_height = window.innerHeight - 100;
+
+            //creating function that moves the box
+            function move() {
+                // for horizontal movement
+                switch (x) {
+                    case 0:
+                        move_x = 1;
+                        break;
+                    case max_width:
+                        move_x = -1;
+                        break;
+                }
+
+                // for vertical movement
+                switch (y) {
+                    case 0:
+                        move_y = 1;
+                        break;
+                    case max_height:
+                        move_y = -1;
+                        break;
+                }
+
+                //iteration based on condition of movement
+                x = x + move_x;
+                y = y + move_y;
+
+                //movement of box
+                box.style.left = x + "px";
+                box.style.top = y + "px"
+            }
+        </script>
+    </body>
+</html>
