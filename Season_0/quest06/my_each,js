@@ -1,0 +1,8 @@
+function my_each(strArr) {
+    for (i = 0; i < strArr.length; i++) {
+        console.log(strArr[i]);
+    }
+};
+
+//console.log(my_each(["blah1", "blah2", "blah3"]));
+console.log(my_each(["blah1", "blah2", "blah3"]));
