@@ -1,101 +1,161 @@
 #include <stdio.h>
-#include "main.h"
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#define SIZE 4
 
-int main(void)
+int check_digit(char* s)
 {
-    char a[4] = "0123";
-    char b[4];
-    int i;
-
-    int c = well_placed(a, b);
-    int d = mis_placed(a, b);
-
-    printf("Will you find the secret code?\n");
-    printf("Please enter a valid guess\n");
-
-    for (i = 0; i < 10; i++)
+    unsigned int i = 0;
+    while (i < strlen(s))
     {
-        printf("---\nRound %d\n", i);
-        scanf("%s", b);
-
-       if (len(b) == 4)
-       {
-           if (c == 4)
-           {
-                printf("Congratz! You did it!\n");
-                break;
-            }
-            else
-            {
-                printf("Well placed pieces: %d\n", c);
-                printf("Misplaced pieces: %d\n", d);
-            }
-       }
-       else {
-            printf("Wrong\n");
-       }
+        if (s[i] < '0' || s[i] > '9')
+        {
+            return 1;
+        }
+        i++;
     }
     return 0;
 }
 
-int well_placed(char* nums, char* inp)
+void convert_to_int(int* a, char* b)
 {
-    int i, j;
-    int well = 0;
-
-    for (i = 0; i < 4; i++)
+    
+    int i;
+    char str_num[2] = {0};
+    for (i = 0; b[i]; i++)
     {
-        for (j = 0; j < 4; j++)
+        str_num[0] = b[i];
+        a[i] = atoi(str_num);
+    }
+}
+
+int* rand_number()
+{
+    int* temp = malloc(SIZE * sizeof(int));
+    int new_num[9] = {0};
+
+    srand(time(NULL));
+    for (int i = 0; i < SIZE; i++)
+    {
+        int num = rand() % 10;
+
+        while(new_num[num] == 1)
         {
-            if (nums[i] == inp[j] && i == j)
+            num = rand() % 10;
+        }
+        temp[i] = num;
+        new_num[num] = 1;
+    }
+    return temp;
+}
+
+int main(int argc, char** argv)
+{
+    int* hidden_code = malloc(SIZE * sizeof(char));
+    int num_generated = 10;
+    int round = 0;
+    int* predit = malloc(SIZE * sizeof(int));
+
+    if (argc > 2)
+    {
+        if ((check_digit(argv[2]) != 0) || (strlen(argv[2]) != 4))
+        {
+            printf("Wrong input %s passed\n", argv[2]);
+            hidden_code = rand_number();
+        }
+        else
+        {
+            if (strcmp(argv[1], "-c") == 0)
             {
-                well++;
+                convert_to_int(hidden_code, argv[2]);
+            }
+            else if (strcmp(argv[1], "-t") == 0)
+            {
+                num_generated = atoi(argv[2]);
+                if (num_generated > 10)
+                {
+                    num_generated = 10;
+                }
             }
         }
     }
-    return well;
-}
-
-int mis_placed(char* nums, char* inp)
-{
-    int i, j;
-    int mis = 0;
-
-    for (i = 0; i < 4; i++)
+    else
     {
-        for (j = 0; j < 4; j++)
+        hidden_code = rand_number();
+    }
+
+    printf("Will you find the secret code?\n");
+    printf("Please enter a valid guess\n");
+
+    while (num_generated > 0)
+    {
+        printf("\nRound %d\n", round);
+        round++;
+
+        int well_placed = 0, miss_placed = 0;
+        char* buffering = malloc(5 * sizeof(char));
+        if (buffering == NULL)
         {
-            if (nums[i] == inp[j] && i != j)
+            printf("Memory Allocation failed!\n");
+            return 1;
+        }
+
+        ssize_t a = read(0, buffering, 5);
+        if (a <= 4)
+        {
+            num_generated--;
+            break;
+        }
+        else
+        {
+            buffering[a] = '\0';
+        }
+
+        int num_int = atoi(buffering);
+        if (num_int == 0)
+        {
+            printf("Wrong input passed.\n");
+            num_generated--;
+            continue;
+        }
+        else
+        {
+            convert_to_int(predit, buffering);
+        }
+
+        for (int i = 0; i < SIZE; i++)
+        {
+            if (hidden_code[i] == predit[i])
             {
-                mis++;
+                well_placed++;
+            }
+            else
+            {
+                for (int j = 0; j < SIZE; j++)
+                {
+                    if (hidden_code[i] == predit[j] && i != j)
+                    {
+                        miss_placed++;
+                        break;
+                    }
+                }
             }
         }
+        if (well_placed == 4)
+        {
+            printf("Congratz! You did it!\n");
+            break;
+        }
+        else
+        {
+            printf("Well placed pieces: %d\nMisplaced pieces: %d\n", well_placed, miss_placed);
+            num_generated--;
+        }
+        free(buffering);
     }
-    return mis;
-}
-
-int check_char(char* str)
-{
-    int i;
-    int res;
-    for (i = 0; i < len(str); i++)
-    {
-        if (str[i] < '0' || str[i] > '8')
-            res = 0;
-    }
-    if (res == 0)
-    {
-        return 0;
-    }
-    return 1;
-}
-
-int len(char *str)
-{
-    int i;
-    for (i = 0; str[i]; i++)
-    {
-        ;
-    }
+    free(hidden_code);
+    free(predit);
     return 0;
 }
