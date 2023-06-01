@@ -1,40 +1,39 @@
-// get a random integer between the range of [min,max]
-generateRandomInt = (min, max) => {
+// This function generates a random integer between the range of [min,max]
+const generateRandomInt = (min, max) => {
     min = Math.ceil(min);
     max = Math.floor(max);
   
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
   
-  // generate a new tetromino sequence
-  // @see https://tetris.fandom.com/wiki/Random_Generator
-generateSequence = () => {
-    const sequence = ['I', 'J', 'L', 'O', 'S', 'T', 'Z'];
+  // This function generates a new tetromino sequence
+const generateRandomTetromino = () => {
+    const tetrominosequence = ['I', 'J', 'L', 'O', 'S', 'T', 'Z'];
   
-    while (sequence.length) {
-      const rand = generateRandomInt(0, sequence.length - 1);
-      const name = sequence.splice(rand, 1)[0];
-      tetrominoSequence.push(name);
+    while (tetrominosequence.length) {
+      const randIndex = generateRandomInt(0, tetrominosequence.length - 1);
+      const randTetromino = tetrominosequence.splice(randIndex, 1)[0];
+      tetrominoSequence.push(randTetromino);
     }
   }
   
-  // get the next tetromino in the sequence
+  // This function generates a random tetromino sequence which will be the next
   function getNextTetromino() {
     if (tetrominoSequence.length === 0) {
-      generateSequence();
+      generateRandomTetromino();
     }
   
-    const name = tetrominoSequence.pop();
-    const matrix = tetrominos[name];
+    const na = tetrominoSequence.pop();
+    const matrix = tetrominos[na];
   
     // I and O start centered, all others start in left-middle
     const col = playfield[0].length / 2 - Math.ceil(matrix[0].length / 2);
   
     // I starts on row 21 (-1), all others start on row 22 (-2)
-    const row = name === 'I' ? -1 : -2;
+    const row = na === 'I' ? -1 : -2;
   
     return {
-      name: name,      // name of the piece (L, O, etc.)
+      name: na,      // name of the piece (L, O, etc.)
       matrix: matrix,  // the current rotation matrix
       row: row,        // current row (starts offscreen)
       col: col         // current col
